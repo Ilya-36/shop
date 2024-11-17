@@ -16,3 +16,15 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+
+Route::middleware('auth')->group(function () {
+    Route::post('/cart/{productId}', [CartController::class, 'addToCart'])->name('cart.add');
+    Route::delete('/cart/{productId}', [CartController::class, 'removeFromCart'])->name('cart.remove');
+    Route::get('/cart', [CartController::class, 'showCart'])->name('cart.index');
+    Route::post('/checkout', [CartController::class, 'checkout'])->name('checkout');
+});
